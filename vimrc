@@ -19,11 +19,11 @@ Plugin 'Chiel92/vim-autoformat'
 Plugin 'scrooloose/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 "Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } 
-Plugin 'junegunn/fzf.vim' 
+Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plugin 'junegunn/fzf.vim'
 Plugin 'mileszs/ack.vim'
-"Plugin 'Valloric/YouCompleteMe'
-Plugin 'SirVer/ultisnips'
+Plugin 'Valloric/YouCompleteMe'
+"Plugin 'SirVer/ultisnips'
 Plugin 'itchyny/lightline.vim'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'luochen1990/rainbow'
@@ -38,7 +38,8 @@ Plugin 'ternjs/tern_for_vim'
 Plugin 'vim-scripts/JavaScript-Indent'
 Plugin 'w0rp/ale'
 Plugin 'git@github.com:fugalh/desert.vim.git'
-
+Plugin 'alvan/vim-closetag'
+"Plugin 'Raimondi/delimitMate'
 
 " ...
 
@@ -47,8 +48,11 @@ call vundle#end()            " required
 filetype plugin indent on    " required
 
 
+set background=dark
+colorscheme solarized
+
 set nonumber
-syntax on
+syntax enable
 set ic
 set hlsearch
 set encoding=utf-8
@@ -60,20 +64,26 @@ set scrolloff=4
 set showmatch
 set nu
 set backspace=indent,eol,start
+set guifont=Fira\ Code:h12
 
 
 
 "set ack.vim on ag  for search
 let g:ackprg = 'ag --nogroup --nocolor --column'
 
+let g:closetag_html_style=1     " 支持 html 风格"
 
 
-inoremap jk <Esc>
+
+inoremap <CR> <Esc>
 nmap fw :w<CR>
 nmap fq :q<CR>
 nmap fwq :wq<CR>
 
 nnoremap <silent> <C-p> :Files<CR>
+imap<C-o> <End><cr>
+
+
 
 " NERDTree config
 nmap tr :NERDTreeToggle<CR>
@@ -84,6 +94,9 @@ nmap tr :NERDTreeToggle<CR>
 
 " 让配置变更立即生效
 autocmd BufWritePost $MYVIMRC source $MYVIMRC
+
+"autoformat
+au BufWrite * :Autoformat
 
 let python_highlight_all=1
 au Filetype python set tabstop=4
@@ -99,30 +112,62 @@ autocmd Filetype python set foldlevel=99
 
 map <C-e> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
-        exec "w"
-        if &filetype == 'c'
-                exec "!g++ % -o %<"
-                exec "!time ./%<"
-        elseif &filetype == 'cpp'
-                exec "!g++ % -o %<"
-                exec "!time ./%<"
-        elseif &filetype == 'java'
-                exec "!javac %"
-                exec "!time java %<"
-        elseif &filetype == 'sh'
-                :!time bash %
-        elseif &filetype == 'python'
-                exec "!clear"
-                exec "!time python3 %"
-        elseif &filetype == 'html'
-                exec "!firefox % &"
-        elseif &filetype == 'go'
-                " exec "!go build %<"
-                exec "!time go run %"
-        elseif &filetype == 'mkd'
-                exec "!~/.vim/markdown.pl % > %.html &"
-                exec "!firefox %.html &"
-        endif
+	exec "w"
+	if &filetype == 'c'
+		exec "!g++ % -o %<"
+		exec "!time ./%<"
+	elseif &filetype == 'cpp'
+		exec "!g++ % -o %<"
+		exec "!time ./%<"
+	elseif &filetype == 'java'
+		exec "!javac %"
+		exec "!time java %<"
+	elseif &filetype == 'sh'
+		:!time bash %
+	elseif &filetype == 'python'
+		exec "!clear"
+		exec "!time python3 %"
+	elseif &filetype == 'html'
+		exec "!firefox % &"
+	elseif &filetype == 'go'
+		" exec "!go build %<"
+		exec "!time go run %"
+	elseif &filetype == 'mkd'
+		exec "!~/.vim/markdown.pl % > %.html &"
+		exec "!firefox %.html &"
+	endif
 endfun
 
-colorscheme desert
+
+"set termguicolors
+
+let g:ycm_python_binary_path = '/Library/Frameworks/Python.framework/Versions/3.6/Python'
+let g:ycm_add_preview_to_completeopt = 0
+let g:ycm_show_diagnostics_ui = 0
+let g:ycm_server_log_level = 'info'
+let g:ycm_min_num_identifier_candidate_chars = 2
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+let g:ycm_complete_in_strings=1
+let g:ycm_key_invoke_completion = '<c-z>'
+set completeopt=menu,menuone
+
+noremap <c-z> <NOP>
+
+let g:ycm_semantic_triggers =  {
+			\ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+			\ 'cs,lua,javascript': ['re!\w{2}'],
+			\ }
+
+
+let g:ycm_filetype_whitelist = {
+			\ "c":1,
+			\ "cpp":1,
+			\ "objc":1,
+			\ "html":1,
+			\ "sh":1,
+			\ "zsh":1,
+			\ "zimbu":1,
+			\ }
+if has('python3')
+	silent! python3 1
+endif
