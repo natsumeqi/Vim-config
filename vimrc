@@ -40,7 +40,7 @@ Plugin 'w0rp/ale'
 Plugin 'git@github.com:fugalh/desert.vim.git'
 Plugin 'alvan/vim-closetag'
 "Plugin 'Raimondi/delimitMate'
-
+Plugin 'python-mode/python-mode'
 " ...
 
 " All of your Plugins must be added before the following line
